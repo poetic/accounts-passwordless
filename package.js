@@ -16,11 +16,6 @@ Package.onUse(function(api) {
   api.addFiles('client/login-from-link.js', 'client');
   api.addFiles('server/login-method.js', 'server');
   api.addFiles('client/init-url-matching.js', 'client');
-  //api.addFiles('client/on-login-link.js', 'client');
 });
 
-Package.onTest(function(api) {
-  //api.use('tinytest');
-  //api.use('poeticsystems:accounts-passwordless');
-  //api.addFiles('accounts-passwordless-tests.js');
-});
+Package.onTest(function(api){});

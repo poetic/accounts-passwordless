@@ -7,5 +7,7 @@ Accounts.loginFromLink = function(token, callback){
     if (response.userId && ! response.error) {
       Meteor.connection.setUserId(response.userId);
     }
+
+    Meteor.call('onLoginFromLink', err, response);
   });
 };
