@@ -9,8 +9,11 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.1.0.2');
+
   api.use('accounts-base', ['client', 'server']);
-  api.addFiles('accounts-passwordless.js');
+
+  api.addFiles('server/login-config.js', 'server');
+  api.addFiles('server/send-login-email.js', 'server');
 });
 
 Package.onTest(function(api) {
