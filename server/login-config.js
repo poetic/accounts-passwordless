@@ -9,7 +9,6 @@ Accounts.emailTemplates.login = {
 
   text: function(user, url){
     return "Click on the link below to login.\n" +
-      "\n" +
-      url;
-  }
+      "\n" + url;
+  },
 };

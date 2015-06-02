@@ -1,3 +1,5 @@
+// taken mostly from https://github.com/meteor/meteor/blob/master/packages/accounts-password/password_server.js#L573
+
 Accounts.sendLoginEmail = function(userId, address){
   var user = Meteor.users.findOne(userId);
 
@@ -9,6 +11,7 @@ Accounts.sendLoginEmail = function(userId, address){
     var email = _.find(user.emails || [], function (e) {
       return !e.verified;
     });
+
     address = (email || {}).address;
   }
 
