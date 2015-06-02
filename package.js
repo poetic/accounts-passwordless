@@ -14,6 +14,7 @@ Package.onUse(function(api) {
 
   api.addFiles('server/login-config.js', 'server');
   api.addFiles('server/send-login-email.js', 'server');
+  api.addFiles('client/login-from-link.js', 'client');
 });
 
 Package.onTest(function(api) {
