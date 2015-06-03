@@ -10,14 +10,12 @@ This package allows you to login users without asking for a password. Authentica
 
 First, from your server call `Accounts.sendLoginEmail(userId, email);`. This will send an email to your user with a login link in the form of http://localhost:3000/#/login/{token}.
 
-After login is resolved `onLoginFromLink` will be called. This is a login handler that should be defined in `Meteor.methods`.
+After login is resolved the `Accounts.onLoginFromLink` handler will be called. As with Meteor's other redirect handlers, this function should be defined in top level code and not wrapped in `Meteor.startup`. The handler should be defined in client code and takes the following form:
 
 ```
-Meteor.methods({
-  onLoginFromLink: function(err, response){
-    // err is a Meteor.Error object
-    // response is an object in the form of { userId: userId }
-  }
+Accounts.onLoginFromLink(function(err, response){
+  // err is a Meteor.Error object
+  // response is a success object in the form of { userId: docId }
 });
 ```
 

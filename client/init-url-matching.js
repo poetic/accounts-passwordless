@@ -2,6 +2,9 @@
 
 var Ap = {};
 
+// We only support one callback per URL.
+var accountsCallbacks = {};
+
 // All of the special hash URLs we support for accounts interactions
 var accountsPaths = ["reset-password", "verify-email", "enroll-account", "login"];
 
@@ -11,8 +14,6 @@ Ap._initUrlMatching = function () {
   // By default, allow the autologin process to happen.
   this._autoLoginEnabled = true;
 
-  // We only support one callback per URL.
-  this._accountsCallbacks = {};
 
   // Try to match the saved value of window.location.hash.
   this._attemptToMatchHash();
@@ -57,38 +58,30 @@ function attemptToMatchHash(accounts, hash, success) {
 }
 
 function defaultSuccessHandler(token, urlPart) {
-  Accounts.loginFromLink(token, function(){});
+  Meteor.call('findUserByToken', token, function(err, userId){
+    if (!err) {
+      Accounts.verifyEmail(token, function(e){
+        var response = {};
 
-  var self = this;
+        if (! e && userId) {
+          response.userId = userId;
+        }
 
-  // put login in a suspended state to wait for the interaction to finish
-  self._autoLoginEnabled = false;
-
-  // wait for other packages to register callbacks
-  Meteor.startup(function () {
-    // if a callback has been registered for this kind of token, call it
-    if (self._accountsCallbacks[urlPart]) {
-      self._accountsCallbacks[urlPart](token, function () {
-        self._enableAutoLogin();
+        if (accountsCallbacks[urlPart]) {
+          accountsCallbacks[urlPart](e, response);
+        }
       });
     }
   });
 }
 
-// Export for testing
-AccountsTest = {
-  attemptToMatchHash: function (hash, success) {
-    return attemptToMatchHash(Accounts, hash, success);
-  }
-};
-
-Ap.onLoginLink = function(callback){
-  if (this._accountsCallbacks["loginLink"]) {
-    Meteor._debug("Accounts.onLoginLink was called more than once. " +
+Accounts.onLoginFromLink = function(callback){
+  if (accountsCallbacks["login"]) {
+    Meteor._debug("Accounts.onLoginFromLink was called more than once. " +
       "Only one callback added will be executed.");
   }
 
-  this._accountsCallbacks["loginLink"] = callback;
+  accountsCallbacks["login"] = callback;
 };
 
 Ap._initUrlMatching();
