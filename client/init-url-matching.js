@@ -57,6 +57,15 @@ function attemptToMatchHash(accounts, hash, success) {
   });
 }
 
+Accounts.onLoginFromLink = function(callback){
+  if (accountsCallbacks["login"]) {
+    Meteor._debug("Accounts.onLoginFromLink was called more than once. " +
+      "Only one callback added will be executed.");
+  }
+
+  accountsCallbacks["login"] = callback;
+};
+
 function defaultSuccessHandler(token, urlPart) {
   Meteor.call('findUserByToken', token, function(err, userId){
     if (!err) {
@@ -74,14 +83,5 @@ function defaultSuccessHandler(token, urlPart) {
     }
   });
 }
-
-Accounts.onLoginFromLink = function(callback){
-  if (accountsCallbacks["login"]) {
-    Meteor._debug("Accounts.onLoginFromLink was called more than once. " +
-      "Only one callback added will be executed.");
-  }
-
-  accountsCallbacks["login"] = callback;
-};
 
 Ap._initUrlMatching();

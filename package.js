@@ -1,6 +1,6 @@
 Package.describe({
   name: 'poeticsystems:accounts-passwordless',
-  version: '0.0.3',
+  version: '0.0.4',
   summary: 'create and login users without requiring a password',
   git: 'https://github.com/poetic/accounts-passwordless',
   documentation: 'README.md'
