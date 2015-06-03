@@ -38,7 +38,6 @@ function attemptToMatchHash(accounts, hash, success) {
 
       // XXX COMPAT WITH 0.9.3
       if (urlPart === "login") {
-        alert('has login token and link')
         accounts._loginToken = token;
       }
     } else {
