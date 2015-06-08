@@ -67,21 +67,21 @@ Accounts.onLoginFromLink = function(callback){
 };
 
 function defaultSuccessHandler(token, urlPart) {
-  Meteor.call('findUserByToken', token, function(err, userId){
-    if (!err) {
+  Meteor.call('findUserByToken', token, function(err, user){
+    if (! err) {
       Accounts.verifyEmail(token, function(e){
         var response = {};
 
-        if (! e && userId) {
-          response.userId = userId;
-        }
+        if (! e && user) { response.user = user }
 
-        if (accountsCallbacks[urlPart]) {
-          accountsCallbacks[urlPart](e, response);
-        }
+        Meteor.setTimeout(function(){
+          if (accountsCallbacks[urlPart]) {
+            accountsCallbacks[urlPart](e, response);
+          }
+        }, 500)
       });
     }
   });
-}
+};
 
 Ap._initUrlMatching();
