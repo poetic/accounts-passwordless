@@ -2,7 +2,7 @@
 
 ## Installation
 
-`meteor add poeticsystems:accounts-passwordless`
+`meteor add poetic:accounts-passwordless`
 
 ## Usage
 
