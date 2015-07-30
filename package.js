@@ -1,6 +1,6 @@
 Package.describe({
   name: 'poetic:accounts-passwordless',
-  version: '0.0.4',
+  version: '0.0.5',
   summary: 'create and login users without requiring a password',
   git: 'https://github.com/poetic/accounts-passwordless',
   documentation: 'README.md'
@@ -9,12 +9,25 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.1.0.2');
 
-  api.use('accounts-base', ['client', 'server']);
+  api.use([
+    'accounts-base',
+    'accounts-ui',
+    'accounts-password'
+  ], [
+    'client', 'server'
+  ]);
 
-  api.addFiles('server/login-config.js', 'server');
-  api.addFiles('server/send-login-email.js', 'server');
-  api.addFiles('server/find-user-by-token.js', 'server');
+  api.addFiles([
+    'server/login-config.js',
+    'server/send-login-email.js',
+    'server/find-user-by-token.js',
+  ], 'server');
+
   api.addFiles('client/init-url-matching.js', 'client');
+
+  api.imply([
+    'accounts-base', 'accounts-ui', 'accounts-password'
+  ]);
 });
 
 Package.onTest(function(api){});
