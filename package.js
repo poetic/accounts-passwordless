@@ -13,14 +13,14 @@ Package.onUse(function(api) {
     'accounts-base',
     'accounts-ui',
     'accounts-password'
-  ], [
-    'client', 'server'
-  ]);
+    'poetic:tokenizer'
+  ], ['client', 'server']);
+
+  api.use('email@1.0.7','server')
 
   api.addFiles([
     'server/login-config.js',
     'server/send-login-email.js',
-    'server/find-user-by-token.js',
   ], 'server');
 
   api.addFiles('client/init-url-matching.js', 'client');

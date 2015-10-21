@@ -1,4 +1,5 @@
 // taken mostly from https://github.com/meteor/meteor/blob/master/packages/accounts-password/password_server.js#L573
+//need process.env.MAIL_URL for email to work
 
 Accounts.sendLoginEmail = function(userId, address){
   var user = Meteor.users.findOne(userId);
@@ -7,38 +8,29 @@ Accounts.sendLoginEmail = function(userId, address){
     throw new Error("Can't find user");
   }
 
-  if (! address) {
-    var email = _.find(user.emails || [], function (e) {
-      return !e.verified;
-    });
-
-    address = (email || {}).address;
-  }
-
-  if (!address || !_.contains(_.pluck(user.emails || [], 'address'), address)) {
-    throw new Error("No such email address for user.");
-  }
+  var token;
+  Tokenizer.generate({user: user, expires: { week: 1 }}, function(userToken){
+    if(userToken){
+      token = userToken; 
+    }
+    else{
+      throw new Error("no token returned");
+    }
+  });
 
   var tokenRecord = {
-    token: Random.secret(),
-    address: address,
-    when: new Date()
+    token: token,
   };
-
-  Meteor.users.update(
-    { _id: userId },
-    { $push: {'services.email.verificationTokens': tokenRecord } }
-  );
 
   Meteor._ensure(user, 'services', 'email');
 
   if (!user.services.email.verificationTokens) {
-    user.services.email.verificationTokens = [];
-  }
-
+      user.services.email.verificationTokens = [];
+    }
+    
   user.services.email.verificationTokens.push(tokenRecord);
 
-  var loginUrl = Accounts.urls.login(tokenRecord.token);
+  var loginUrl = Accounts.urls.login(token);
 
   var options = {
     to: address,

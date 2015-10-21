@@ -66,22 +66,19 @@ Accounts.onLoginFromLink = function(callback){
   accountsCallbacks["login"] = callback;
 };
 
+//replace with use of Tonekizer
 function defaultSuccessHandler(token, urlPart) {
-  Meteor.call('findUserByToken', token, function(err, user){
-    if (! err) {
-      Accounts.verifyEmail(token, function(e){
-        var response = {};
-
-        if (! e && user) { response.user = user }
-
-        Meteor.setTimeout(function(){
-          if (accountsCallbacks[urlPart]) {
-            accountsCallbacks[urlPart](e, response);
-          }
-        }, 500)
-      });
+  var response = {};
+  Tokenizer.verify(token, function(err, user){
+    if(!err){
+      response.user = user;
+      Meteor.setTimeout(function(){
+        if (accountsCallbacks[urlPart]) {
+          accountsCallbacks[urlPart](null, response);
+        }
+      }, 500);
     }
-  });
+  })
 };
 
 Ap._initUrlMatching();
