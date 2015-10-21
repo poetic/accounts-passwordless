@@ -25,4 +25,4 @@ If `onLoginFromLink` is called without error the user is authenticated and attac
 
 ## Dependencies
 
-As mentioned above, this package draws on the functionality of the ```poetic:tokenizer``` package to both generate tokens for a user's login, and verify those tokens upon login. Follow this link to learn more: [poetic:tokenizer](https://github.com/poetic/tokenizer).
+As mentioned above, this package draws on the functionality of the ```poetic:tokenizer``` package to both generate tokens for a user's login, and verify those tokens upon login. Follow this [link](https://github.com/poetic/tokenizer) to learn more.
