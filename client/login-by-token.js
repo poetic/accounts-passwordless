@@ -1,6 +1,7 @@
 Accounts.loginByPhone = function(code, phoneNumber){
+  console.log(Accounts);
   Meteor.call('loginByPhone', code, phoneNumber, function(err, token){
     if(err){ return; }
-    Accounts.loginWithToken(token);
+    Meteor.loginWithToken(token);
   });
 };
