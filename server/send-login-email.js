@@ -4,7 +4,8 @@ Accounts.sendLoginEmail = function(userId, address){
   var user = Meteor.users.findOne(userId);
 
   if (! user) {
-    throw new Error("Can't find user");
+    var newUserId = Accounts.createUser({email: address}})
+    user = Meteor.users.findOne(newUserId);
   }
 
   if (! address) {
