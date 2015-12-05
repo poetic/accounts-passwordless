@@ -1,27 +1,18 @@
 // taken mostly from https://github.com/meteor/meteor/blob/master/packages/accounts-password/password_server.js#L573
 
-Accounts.sendLoginEmail = function(userId, address){
-
-  if (! userId && address) {
-    userId = Accounts.createUser({email: address}})
-  }
-
-  var user = Meteor.users.findOne(userId);
-
-  if (! user) {
-    throw new Error("Can't find user");
-  }
+Accounts.sendLoginEmail = function(address){
 
   if (! address) {
-    var email = _.find(user.emails || [], function (e) {
-      return !e.verified;
-    });
-
-    address = (email || {}).address;
+    throw new Meteor.Error("No email provided")
+  } else if (!/^[^@]+@[^@]+\.[^@]+$/.test(address)) {
+    throw new Meteor.Error("Provided string is not an email")
   }
 
-  if (!address || !_.contains(_.pluck(user.emails || [], 'address'), address)) {
-    throw new Error("No such email address for user.");
+  var user = Accounts.findUserByEmail(address)
+
+  if (! user) {
+    Accounts.createUser({email: address})
+    user = Accounts.findUserByEmail(address)
   }
 
   var tokenRecord = {
@@ -31,7 +22,7 @@ Accounts.sendLoginEmail = function(userId, address){
   };
 
   Meteor.users.update(
-    { _id: userId },
+    { _id: user._id },
     { $push: {'services.email.verificationTokens': tokenRecord } }
   );
 
