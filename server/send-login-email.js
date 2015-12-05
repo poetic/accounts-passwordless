@@ -1,11 +1,15 @@
 // taken mostly from https://github.com/meteor/meteor/blob/master/packages/accounts-password/password_server.js#L573
 
 Accounts.sendLoginEmail = function(userId, address){
+
+  if (! userId && address) {
+    userId = Accounts.createUser({email: address}})
+  }
+
   var user = Meteor.users.findOne(userId);
 
   if (! user) {
-    var newUserId = Accounts.createUser({email: address}})
-    user = Meteor.users.findOne(newUserId);
+    throw new Error("Can't find user");
   }
 
   if (! address) {
