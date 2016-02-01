@@ -16,7 +16,7 @@ Accounts.sendLoginSms = function(userId, phoneNumber, twilioOptions, customMessa
 
   Meteor.users.update(
     { _id: userId },
-    { $set: {'services.phone.verificationTokens': tokenRecord , 'services.resume.loginTokens': [] } }
+    { $set: {'services.phone.verificationTokens': tokenRecord } }
   );
 
   Accounts._insertLoginToken(user._id, tokenRecord);
