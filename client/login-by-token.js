@@ -1,5 +1,5 @@
-Accounts.loginByPhone = function(code, phoneNumber,callback){
-  Meteor.call('loginByPhone', code, phoneNumber, function(err, token){
+Accounts.loginByPhone = function(code, phoneNumber, propName, callback){
+  Meteor.call('loginByPhone', code, phoneNumber, propName, function(err, token){
     if(err){
       if(_.isFunction(callback)){
         callback(err);
