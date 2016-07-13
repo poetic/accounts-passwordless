@@ -2,7 +2,7 @@ Meteor.methods({
   loginByPhone: function(code, phone, propName){
     const query = { 'services.phone.verificationTokens.code': code };
     query[propName ? propName : 'profile.phone'] = phone;
-    user = Meteor.users.findOne(query);
+    const user = Meteor.users.findOne(query);
 
     if(!user){ throw new Error("User not found with that code and phone number"); }
 

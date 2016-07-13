@@ -62,9 +62,13 @@ Template.login.events({
   'click .submit-code': function(){
     let phoneNumber = $('.login').val();
     let code = $('.code').val();
-    Accounts.loginByPhone(code, phoneNumber, propName);
-  }
+    Accounts.loginByPhone(code, phoneNumber, propName, (err) => );
+      if (err) {
+        throw new Error("User not found with that code and phone number");
+      }
+   }
 });
 ```
 
-Notice the first event calls the serverside Method you created from the client.  The second event takes the code and the phoneNumber as arguments and will login the user if they Match.
+Notice the first event calls the serverside method you created from the client.  The second event takes the code, phoneNumber, and a propName as arguments and will login the user if they Match.
+propName is used to query the phone number in the database.
