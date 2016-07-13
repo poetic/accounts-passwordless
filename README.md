@@ -62,10 +62,11 @@ Template.login.events({
   'click .submit-code': function(){
     let phoneNumber = $('.login').val();
     let code = $('.code').val();
-    Accounts.loginByPhone(code, phoneNumber, propName, (err) => );
+    Accounts.loginByPhone(code, phoneNumber, propName, (err) => {
       if (err) {
         throw new Error("User not found with that code and phone number");
       }
+    });
    }
 });
 ```
