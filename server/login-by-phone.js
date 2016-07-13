@@ -1,6 +1,8 @@
 Meteor.methods({
-  loginByPhone: function(code, phone){
-    user = Meteor.users.findOne({'services.phone.verificationTokens.code': code, 'profile.phone': phone});
+  loginByPhone: function(code, phone, propName){
+    const query = { 'services.phone.verificationTokens.code': code };
+    query[propName ? propName : 'profile.phone'] = phone;
+    const user = Meteor.users.findOne(query);
 
     if(!user){ throw new Error("User not found with that code and phone number"); }
 
@@ -8,8 +10,8 @@ Meteor.methods({
     var time = token.when,
         returnToken = token.token;
 
-    /* if the phone number matches the code sent, the user, and time is within 10 minutes */
-    if(user.profile.phone === phone && new Date().getTime() - token.when < 600000){
+    /* if the time is within 10 minutes */
+    if(new Date().getTime() - token.when < 600000){
       return returnToken;
     }
 

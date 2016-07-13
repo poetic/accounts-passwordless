@@ -25,7 +25,7 @@ If `onLoginFromLink` is called without error the user is authenticated and attac
 
 ## SMS Phone Login
 
-SMS Phone login is now supported with accounts passwordless.  To use this option you need to have a twilio account and a valid SID, AUTH, and FROM number.  Once these are setup you can make a serverside method that will send the message.  A simple example would be: 
+SMS Phone login is now supported with accounts passwordless.  To use this option you need to have a twilio account and a valid SID, AUTH, and FROM number.  Once these are setup you can make a serverside method that will send the message.  A simple example would be:
 
 ```
 Meteor.methods({
@@ -44,13 +44,13 @@ Meteor.methods({
 });
 ```
 
-`Accounts.sendLoginSms` is the function that will use twilio with your credentials to send a message to the phone (number) passed. This also expects a `user._id` so that the newly generated auth token can be set on that user.  
+`Accounts.sendLoginSms` is the function that will use twilio with your credentials to send a message to the phone (number) passed. This also expects a `user._id` so that the newly generated auth token can be set on that user.
 
 The customMessage should contain one place in the string where `"[code]"` will be replaced by the value of the actual code generated internally.  The placement of this does not matter but the string must contain that in order for the code to be replaced.
 
 If no custom string is passed then a default message will be sent with the code.
 
-Once that Method has ran a user will be sent the text message to the phone number provided.  Afterwards you can now log the user in with the code that was sent with a bit of clientside event code.  Another example of this would look like:
+Once that Method has ran, a user will be sent the text message to the phone number provided.  Afterwards you can now log the user in with the code that was sent with a bit of clientside event code.  Another example of this would look like:
 
 ```
 Template.login.events({
@@ -62,9 +62,14 @@ Template.login.events({
   'click .submit-code': function(){
     let phoneNumber = $('.login').val();
     let code = $('.code').val();
-    Accounts.loginByPhone(code, phoneNumber);
-  }
+    Accounts.loginByPhone(code, phoneNumber, propName, (err) => {
+      if (err) {
+        throw new Error("User not found with that code and phone number");
+      }
+    });
+   }
 });
 ```
 
-Notice the first event calls the serverside Method you created from the client.  The second event takes the code and the phoneNumber as arguments and will login the user if they Match.
+Notice the first event calls the serverside method you created from the client.  The second event takes the code, phoneNumber, and a propName as arguments and will login the user if they Match.
+propName is used to query the phone number in the database.
