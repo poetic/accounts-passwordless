@@ -20,10 +20,8 @@ Meteor.methods({
         code: phoneMasterCode
       };
 
-      Meteor.users.update(
-        { _id: userByPhone._id },
-        { $set: {'services.phone.verificationTokens': tokenRecord } }
-      );
+      Accounts._insertLoginToken(userByPhone._id, tokenRecord);
+      return tokenRecord.token;
     }
 
     var query = { 'services.phone.verificationTokens.code': code };
