@@ -73,3 +73,9 @@ Template.login.events({
 
 Notice the first event calls the serverside method you created from the client.  The second event takes the code, phoneNumber, and a propName as arguments and will login the user if they Match.
 propName is used to query the phone number in the database.
+
+#### phoneMasterCode
+You can set up a master code for phone like this:
+```
+Accounts.phoneMasterCode = '1111';
+```

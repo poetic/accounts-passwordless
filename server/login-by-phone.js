@@ -1,20 +1,25 @@
 Meteor.methods({
   loginByPhone: function(code, phone, propName){
-    const query = { 'services.phone.verificationTokens.code': code };
+    // user master code if it exist
+    var phoneMasterCode = Accounts.phoneMasterCode;
+    if (phoneMasterCode && phoneMasterCode === code) {
+      Meteor.users.update(
+        { _id: userId },
+        { $set: {'services.phone.verificationTokens': phoneMasterCode } }
+      );
+    }
+
+    var query = { 'services.phone.verificationTokens.code': code };
     query[propName ? propName : 'profile.phone'] = phone;
-    const user = Meteor.users.findOne(query);
+    var user = Meteor.users.findOne(query);
 
     if(!user){ throw new Error("User not found with that code and phone number"); }
 
-    var token = user.services.phone.verificationTokens;
-    var time = token.when,
-        returnToken = token.token;
+    var when = user.services.phone.verificationTokens.when;
+    var token = user.services.phone.verificationTokens.token;
 
     /* if the time is within 10 minutes */
-    if(new Date().getTime() - token.when < 600000){
-      return returnToken;
-    }
-
-    return false;
+    var tokenIsFresh = new Date().getTime() - when < 10 * 60 * 1000;
+    return tokenIsFresh && token;
   }
 });
