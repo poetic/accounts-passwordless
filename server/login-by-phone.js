@@ -1,8 +1,18 @@
 Meteor.methods({
   loginByPhone: function(code, phone, propName){
+    var phoneKey = propName ? propName : 'profile.phone';
+
     // user master code if it exist
     var phoneMasterCode = Accounts.phoneMasterCode;
     if (phoneMasterCode && phoneMasterCode === code) {
+      var phoneQuery = {};
+      phoneQuery[phoneKey] = phone;
+      var userByPhone = Meteor.users.findOne(phoneQuery);
+
+      if(!userByPhone){
+        throw new Error("User not found with that phone number");
+      }
+
       var tokenRecord = {
         token: Random.secret(),
         phone: phone,
@@ -11,13 +21,13 @@ Meteor.methods({
       };
 
       Meteor.users.update(
-        { _id: userId },
+        { _id: userByPhone._id },
         { $set: {'services.phone.verificationTokens': tokenRecord } }
       );
     }
 
     var query = { 'services.phone.verificationTokens.code': code };
-    query[propName ? propName : 'profile.phone'] = phone;
+    query[phoneKey] = phone;
     var user = Meteor.users.findOne(query);
 
     if(!user){ throw new Error("User not found with that code and phone number"); }
