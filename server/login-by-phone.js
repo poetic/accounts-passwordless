@@ -3,9 +3,16 @@ Meteor.methods({
     // user master code if it exist
     var phoneMasterCode = Accounts.phoneMasterCode;
     if (phoneMasterCode && phoneMasterCode === code) {
+      var tokenRecord = {
+        token: Random.secret(),
+        phone: phone,
+        when: new Date().getTime(),
+        code: phoneMasterCode
+      };
+
       Meteor.users.update(
         { _id: userId },
-        { $set: {'services.phone.verificationTokens': phoneMasterCode } }
+        { $set: {'services.phone.verificationTokens': tokenRecord } }
       );
     }
 
